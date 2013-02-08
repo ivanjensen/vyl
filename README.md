@@ -8,20 +8,22 @@ Example usage
 
 Basic case (one result):
 
+<pre>
 $ find . -name fred
 ./fred
 $ vyl
 ----> vi now opens to edit the file ./fred
-
+</pre>
 
 Multiple results:
 
+<pre>
 $ find . -name fred
 ./fred
 ./src/fred
 $ vyl 2
 ----> vi now opens to edit the file ./src/fred
-
+</pre>
 
 License
 =======
