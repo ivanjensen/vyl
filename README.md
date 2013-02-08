@@ -25,6 +25,17 @@ $ vyl 2
 ----> vi now opens to edit the file ./src/fred
 </pre>
 
+Installation
+============
+
+Clone the git repo and then symlink vyl into to a direectory that is on your path
+
+<pre>
+git clone https://github.com/ivanjensen/vyl.git ~/Projects/vyl
+ln -s ~/Projects/vyl ~/bin
+</pre>
+
+
 License
 =======
 
