@@ -1,0 +1,33 @@
+# Copyright (c) 2013 Ivan Jensen, Alan Schroder
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of 
+# this software and associated documentation files (the "Software"), to deal in 
+# the Software without restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the 
+# Software, and to permit persons to whom the Software is furnished to do so, 
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+# This command runs 'vi' against the specified result of the last bash command you ran.
+# If no number is specified then it takes the first result
+# NOTES: 1. The command is re-run, in order to get the result list again
+#        2. There is no header to this file because it needs to run in the same shell
+#            as the bash console, otherwise the 'history' command has no access to your
+#            console history (because it's a new shell)
+#
+
+num=$1 && test -z $num && num=1
+cmd=`history 2|head -1|awk '{ $1 = ""; print $0; }'`
+files=`$cmd`
+vi `echo $files | awk -v n="$num" '{ print $n }'`
