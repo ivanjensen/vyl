@@ -42,3 +42,7 @@ License
 vyl is release under the MIT license, please see the comments in vyl for the
 full license text
 
+Contributing
+============
+
+Fork the repo, hack away, send a github pull-request.
