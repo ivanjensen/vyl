@@ -29,5 +29,5 @@
 
 num=$1 && test -z $num && num=1
 cmd=`history 2|head -1|awk '{ $1 = ""; print $0; }'`
-files=`$cmd`
+files=`eval $cmd`
 $EDITOR `echo $files | awk -v n="$num" '{ print $n }' 2>/dev/null`
