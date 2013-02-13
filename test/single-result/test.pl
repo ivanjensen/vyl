@@ -1,26 +1,31 @@
 #!/usr/bin/perl -Wall
 use Cwd;
+use Test::Simple tests => 2;
 
-my $expected = "vi ./files/test.txt";
-my $command = "find ./files -name test.txt";
+ok(&test("find ./files -name test.txt", "vi ./files/test.txt"), 'single result, no argument');
+ok(&test("find ./files -name myfile", "vi ./files/dir1/myfile", "1"), 'single result, specify first');
+ok(&test("find ./files -name myfile", "vi ./files/dir1/myfile"), 'multiple results, no argument, should take first');
+ok(&test("find ./files -name myfile", "vi ./files/dir1/myfile", "1"), 'multiple results, select first result');
+ok(&test("find ./files -name myfile", "vi ./files/myfile", "2"), 'multiple results, select second result');
 
-# send the command we want to pretend was last in history
-delete $ENV{"EDITOR"};
-$ENV{"VYL_DEBUG"} = $command;
-system("../../vyl");
 
-open FILE, "<", "test-result.txt" or die $!;
+sub test {
+	local($command, $expected, $vyl_args) = ($_[0], $_[1], $_[2]);
 
-my $result = <FILE>;
+	if (! defined $vyl_args) {
+		$vyl_args = "";
+	}
 
-chomp($result);
+	# send the command we want to pretend was last in history
+	delete $ENV{"EDITOR"};
+	$ENV{"VYL_DEBUG"} = $command;
+	system("../../vyl", $vyl_args);
 
-if ($result eq $expected) {
-	print ".";
-	exit 0;
-} else {
-	print "\nF\t" . cwd() . "/$0\n";
-	print "expected:" . $expected;
-	print "result:  " . $result;
-	exit 1;
+	open FILE, "<", "test-result.txt" or die $!;
+
+	my $result = <FILE>;
+
+	chomp($result);
+
+	return ($result eq $expected);
 }
