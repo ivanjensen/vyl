@@ -46,3 +46,10 @@ Contributing
 ============
 
 Fork the repo, hack away, send a github pull-request.
+
+What's with the name?
+=====================
+
+The name started as 'vil' which was short for 'vi last' as in 'vi' the last result I got. 
+But an amusing mistake led to 'vyl', which is pronounced 'vile', which is a nice, but
+nasty name :)
