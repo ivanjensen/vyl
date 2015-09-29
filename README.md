@@ -25,6 +25,29 @@ $ vyl 2
 ----> vi now opens to edit the file ./src/fred
 </pre>
 
+Use a differnt editor:
+
+EITHER set EDITOR environment variable and vyl will use that by default
+<pre>
+$ export EDITOR=nano
+$ find . -name fred
+./fred
+./src/fred
+$ vyl
+----> vi now opens ./fred in nano
+</pre>
+
+OR specify it as the third parameter (you will have to supply the line number even if there's only one).
+<pre>
+$ find . -name fred
+./fred
+./src/fred
+$ vyl 1 nano
+----> vi now opens ./fred in nano
+</pre>
+
+
+
 Installation
 ============
 
