@@ -22,28 +22,44 @@
 # This command runs 'vi' against the specified result of the last bash command you ran.
 # If no number is specified then it takes the first result
 # NOTES: 1. The command is re-run, in order to get the result list again
-#        2. There is no header to this file because it needs to run in the same shell
+#        2. There is no shebang in this file because it needs to run in the same shell
 #            as the bash console, otherwise the 'history' command has no access to your
 #            console history (because it's a new shell)
 #
 
+# Usage: vyl [line] [editor]
+#       line   - result line of the file to edit, starts at 1
+# 	editor - the editor to use (vyl also honours $EDITOR)
+
 num=$1 && test -z $num && num=1
+specific_editor="$2"
 
 if [ $num -eq 0 ]; then
 	exit_cmd="exit 1"
-	if [ ! -z "$VYL_DEBUG" ]; then
+	if [ -n "$VYL_TEST" ]; then
 		echo $exit_cmd > test-result.txt 
 	fi
 	$exit_cmd
 fi
 
 
-if [ -z "$VYL_DEBUG" ]; then 
-	cmd=`history 2|head -1|awk '{ $1 = ""; print $0; }'`
+if [ -z "$VYL_TEST" ]; then 
+	cmd=$(history 2|head -1|awk '{ $1 = ""; print $0; }')
 else
-	cmd="$VYL_DEBUG"
+	cmd="$VYL_TEST"
 fi
-files=`eval "$cmd"`
+
+if [[ "$cmd" =~ vyl ]]; then
+	echo "Previous command was vyl, exiting now to prevent recursive doom"
+	exit_cmd="exit 1"
+	if [ -n "$VYL_TEST" ]; then
+		echo $exit_cmd > test-result.txt 
+	fi
+	$exit_cmd
+fi
+
+
+files=$(eval "$cmd")
 
 # Make sure we don't access a non-existant result
 num_files=`echo "$files" | wc -l`
@@ -51,16 +67,21 @@ if [ "$num" -gt "$num_files" ]; then
 	let "num=$num/$num_files"
 fi 
 
-file=`echo "$files" | awk -v n="$num" 'NR==n { print $0; }' #2>/dev/null`
+file=$(echo "$files" | awk -v n="$num" 'NR==n { print $0; }') 
 
-if [ -z $EDITOR ]; then
+if [ -n "$specific_editor" ]; then
+	EDITOR="$specific_editor"
+fi
+
+if [ -z "$EDITOR" ]; then
 	EDITOR='vi'
 fi
 
+
 final_cmd="$EDITOR '$file'" 
 
-if [ -z "$VYL_DEBUG" ]; then 
-	$final_cmd
+if [ -z "$VYL_TEST" ]; then 
+	eval $final_cmd
 else
 	echo $final_cmd > test-result.txt 
 fi
